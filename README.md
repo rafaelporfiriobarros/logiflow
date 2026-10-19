@@ -149,6 +149,8 @@ A integração utiliza um usuário PostgreSQL dedicado à leitura analítica, se
 
 ![Dashboard executivo](docs/images/dashboard-1.PNG)
 
+---
+
 ## API REST
 
 Principais endpoints implementados:
