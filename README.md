@@ -145,6 +145,10 @@ O dashboard foi organizado em quatro páginas:
 
 A integração utiliza um usuário PostgreSQL dedicado à leitura analítica, seguindo o princípio do menor privilégio.
 
+**[📊 Acessar dashboard interativo no Power BI](https://app.powerbi.com/view?r=eyJrIjoiNmVjYWJlN2EtYTJkZi00MjkyLWI0MTgtYmQyZGVkYTg4NjhiIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9)**
+
+![Dashboard executivo](docs/images/dashboard-1.PNG)
+
 ## API REST
 
 Principais endpoints implementados:
