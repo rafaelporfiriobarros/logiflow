@@ -1,0 +1,80 @@
+{
+  "name": "LogiFlow AI - API Key",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "511e4d79-ed7f-4378-b212-6362d526d865",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/api/v1/monitoring/delays",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "118f911c-f0b2-4fc8-866b-f673b04e8172",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "UbsFRfHNu5OHRKcT",
+          "name": "Header Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a74ffb2d-1825-49b9-aeab-9f3a299f44c2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2c705e3d1a5b44d1eff1aa813a0aa3245a69ac94c32c999edbd06cac96ef8f07"
+  },
+  "nodeGroups": [],
+  "id": "XHsnweEZJzU99qYf",
+  "tags": []
+}

@@ -1,0 +1,99 @@
+
+name: LogiFlow AI - CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  quality-and-tests:
+    name: Quality and Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+
+        env:
+          POSTGRES_USER: logiflow
+          POSTGRES_PASSWORD: ci_test_password
+          POSTGRES_DB: logiflow_test
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd "pg_isready -U logiflow -d logiflow_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      APP_ENV: testing
+
+      DB_HOST: localhost
+      DB_HOSTADDR: ""
+      DB_PORT: "5432"
+      DB_NAME: logiflow_test
+      DB_USER: logiflow
+      DB_PASSWORD: ci_test_password
+
+      TEST_DATABASE_URL: postgresql+psycopg://logiflow:ci_test_password@localhost:5432/logiflow_test
+
+      MONITORING_API_KEY: ci-only-placeholder-key
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Validate test database target
+        run: |
+          uv run python -c "
+          from logiflow_ai.core.config import get_settings
+          from sqlalchemy.engine import make_url
+          import os
+
+          settings = get_settings()
+          database = make_url(settings.database_url)
+          test_database = make_url(os.environ['TEST_DATABASE_URL'])
+
+          assert database.database == 'logiflow_test'
+          assert database.host in ('localhost', '127.0.0.1')
+          assert database.port == 5432
+          assert database.username == 'logiflow'
+          assert database == test_database
+
+          print('CI database target validated.')
+          "
+
+      - name: Initialize test database
+        run: uv run alembic upgrade head
+
+      - name: Check Alembic migrations
+        run: uv run alembic check
+
+      - name: Run Ruff
+        run: uv run ruff check .
+
+      - name: Run tests
+        run: uv run pytest -q

@@ -3,9 +3,13 @@ from datetime import UTC, datetime
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from logiflow_ai.core.config import get_settings
 from logiflow_ai.models.monitoring_run import MonitoringRun
 from logiflow_ai.services.delay_monitor import (
     detect_delivery_delays,
+)
+from logiflow_ai.services.notification_service import (
+    enqueue_incident_notifications,
 )
 
 
@@ -43,6 +47,13 @@ def execute_delay_monitoring(
     try:
         with session_factory() as db:
             result = detect_delivery_delays(db)
+
+            if result.created_incident_ids:
+                enqueue_incident_notifications(
+                    db=db,
+                    incident_ids=result.created_incident_ids,
+                    recipient=get_settings().alerts_email_to,
+                )
 
             run = db.get(MonitoringRun, run_id)
 

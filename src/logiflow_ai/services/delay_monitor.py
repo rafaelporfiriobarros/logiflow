@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
 from sqlalchemy import select
@@ -14,6 +14,7 @@ class DelayMonitorResult:
     delayed_shipments: int
     created_incidents: int
     existing_incidents: int
+    created_incident_ids: list[int] = field(default_factory=list)
 
 
 def detect_delivery_delays(
@@ -68,6 +69,7 @@ def detect_delivery_delays(
 
     else:
         created = 0
+        created_ids = []
 
         for shipment_id in shipment_ids:
             existing = db.scalar(
@@ -79,19 +81,22 @@ def detect_delivery_delays(
             )
 
             if existing is None:
-                db.add(
-                    Incident(
-                        shipment_id=shipment_id,
-                        incident_type="delivery_delay",
-                        severity="high",
-                        status="open",
-                    )
+                incident = Incident(
+                    shipment_id=shipment_id,
+                    incident_type="delivery_delay",
+                    severity="high",
+                    status="open",
                 )
+
+                db.add(incident)
                 db.flush()
+
+                created_ids.append(incident.id)
                 created += 1
 
     return DelayMonitorResult(
         delayed_shipments=len(shipment_ids),
         created_incidents=created,
         existing_incidents=len(shipment_ids) - created,
+        created_incident_ids=created_ids,
     )

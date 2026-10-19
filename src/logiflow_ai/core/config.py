@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     db_name: str = "logiflow"
     db_user: str = "logiflow"
     db_password: str = "logiflow_dev_password"
+    alerts_email_to: str = "operacoes@example.com"
 
     model_config = SettingsConfigDict(
         env_file=".env",

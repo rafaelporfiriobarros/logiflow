@@ -1,0 +1,257 @@
+{
+  "name": "LogiFlow AI | Notification Outbox Worker",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/api/v1/notifications/claim",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"limit\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        464,
+        0
+      ],
+      "id": "ef534f73-53ed-4331-9588-03544f27c49a",
+      "name": "Claim Notifications",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "57mmDUkVqYzUWru2",
+          "name": "LogiFlow AI - API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {
+          "destinationFieldName": ""
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        992,
+        -256
+      ],
+      "id": "16986210-cc8a-4c3f-ad74-3c3896dabcde",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fromEmail": "=rafaporfirio.barros@gmail.com",
+        "toEmail": "={{ $json.recipient }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        80
+      ],
+      "id": "72017d23-5d1a-441d-83ee-8d149d35d7a7",
+      "name": "Send an Email",
+      "webhookId": "69f52064-bcab-4584-afdc-aa829b209271",
+      "credentials": {
+        "smtp": {
+          "id": "i7FVc3rhpVIKaxMr",
+          "name": "SMTP account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://api:8000/api/v1/notifications/' + $('Split Out').item.json.id + '/failed' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"claim_token\": $('Split Out').item.json.claim_token,\n  \"error_message\": String($json.error?.message ?? \"Falha no envio SMTP\").slice(0, 1000)\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1264,
+        192
+      ],
+      "id": "ba7b7ba2-e547-44be-b294-d7a9bc2787dd",
+      "name": "Confirm Failed",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "57mmDUkVqYzUWru2",
+          "name": "LogiFlow AI - API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://api:8000/api/v1/notifications/' + $('Split Out').item.json.id + '/sent' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"claim_token\": $('Split Out').item.json.claim_token } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1296,
+        -32
+      ],
+      "id": "f97273c0-3745-46d3-bc3b-9a03c80c0ec8",
+      "name": "Confirm Sent",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "57mmDUkVqYzUWru2",
+          "name": "LogiFlow AI - API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3b43d51d-2b07-4d37-8778-4488717b6f65",
+              "leftValue": "={{ Array.isArray($json.items) && $json.items.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        656,
+        -160
+      ],
+      "id": "6affd6f8-9153-4b21-9ea5-ba1cf4521c7d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        272,
+        0
+      ],
+      "id": "3750ab15-5279-4415-942a-72c3e72c6b7a",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Claim Notifications": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an Email": {
+      "main": [
+        [
+          {
+            "node": "Confirm Sent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirm Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Claim Notifications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c590eb62-0a57-4a18-bce2-588e983bb096",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2c705e3d1a5b44d1eff1aa813a0aa3245a69ac94c32c999edbd06cac96ef8f07"
+  },
+  "nodeGroups": [],
+  "id": "W1t3czkR6F8RE6us",
+  "tags": []
+}

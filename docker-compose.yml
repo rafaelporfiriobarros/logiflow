@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:5433:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -41,6 +41,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      MONITORING_API_KEY: ${MONITORING_API_KEY:?Configure MONITORING_API_KEY no .env}
 
     ports:
       - "127.0.0.1:8000:8000"
@@ -49,5 +50,32 @@ services:
       postgres:
         condition: service_healthy
 
+    
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:5678:5678"
+
+    environment:
+      N8N_HOST: localhost
+      N8N_PORT: "5678"
+      N8N_PROTOCOL: http
+      GENERIC_TIMEZONE: ${N8N_TIMEZONE:-America/Sao_Paulo}
+      TZ: ${N8N_TIMEZONE:-America/Sao_Paulo}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?Configure N8N_ENCRYPTION_KEY no .env}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      MONITORING_API_KEY: ${MONITORING_API_KEY:?Configure MONITORING_API_KEY no .env}
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+    depends_on:
+      api:
+        condition: service_started
+
+
 volumes:
   postgres_data:
+  n8n_data:

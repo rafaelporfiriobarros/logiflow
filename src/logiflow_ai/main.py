@@ -1,11 +1,18 @@
 from fastapi import FastAPI
 
-from logiflow_ai.api.routes import incidents, monitoring
+from logiflow_ai.api.routes import (
+    incidents,
+    monitoring,
+    notifications,
+    observability,
+)
 from logiflow_ai.api.routes.health import router as health_router
 from logiflow_ai.api.routes.shipments import router as shipments_router
 from logiflow_ai.core.config import get_settings
 
 settings = get_settings()
+
+
 
 app = FastAPI(
     title=settings.app_name,
@@ -28,6 +35,16 @@ app.include_router(shipments_router, prefix="/api/v1")
 
 app.include_router(
     health_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    notifications.router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    observability.router,
     prefix="/api/v1",
 )
 
