@@ -4,7 +4,6 @@ import psycopg
 
 from logiflow_ai.core.config import get_settings
 
-
 settings = get_settings()
 
 start = perf_counter()

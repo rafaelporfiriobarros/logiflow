@@ -4,7 +4,6 @@ import psycopg
 
 from logiflow_ai.core.config import get_settings
 
-
 settings = get_settings()
 
 tests = [
@@ -40,10 +39,9 @@ for test in tests:
             password=settings.db_password,
             connect_timeout=10,
             **test["options"],
-        ) as conn:
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT 1")
-                result = cursor.fetchone()
+        ) as conn, conn.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            result = cursor.fetchone()
 
         elapsed = perf_counter() - start
 
