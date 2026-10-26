@@ -304,7 +304,11 @@ Remove-Variable key, secureKey, headers
 
 É esperado que `created_incidents = 0` quando todos os atrasos já têm incidentes abertos. Isso demonstra idempotência, não falha do endpoint.
 
-### 9. Configurar o n8n do zero — monitoramento e notificações por Gmail
+### 9. Configurar o n8n do zero - monitoramento e notificações por Gmail
+
+![Resultados Worflow n8n](docs/images/worflow-http.PNG)
+![Resultados Worflow n8n](docs/images/workflow-email.PNG)
+![Resultados Worflow n8n](docs/images/email-logiflow.PNG)
 
 Esta seção descreve a configuração real dos arquivos `n8n/workflows/monitoring-delays.json` e `n8n/workflows/notification-outbox-worker.json`. O primeiro workflow executa a detecção de atrasos; o segundo reserva notificações no PostgreSQL via API, envia e-mails e registra o resultado.
 
