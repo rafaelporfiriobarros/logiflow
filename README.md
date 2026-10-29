@@ -1,8 +1,8 @@
-# LogiFlow AI — Plataforma de Monitoramento Logístico e Automação de Notificações
+# LogiFlow  — Plataforma de Monitoramento Logístico e Automação de Notificações
 
 **Plataforma de monitoramento de entregas, detecção de atrasos, automação operacional e análise de indicadores logísticos.**
 
-O LogiFlow AI é um projeto end-to-end desenvolvido para demonstrar a aplicação de Engenharia de Dados, desenvolvimento backend, automação de processos e Business Intelligence em um cenário de operações logísticas.
+O LogiFlow  é um projeto end-to-end desenvolvido para demonstrar a aplicação de Engenharia de Dados, desenvolvimento backend, automação de processos e Business Intelligence em um cenário de operações logísticas.
 
 A solução integra Python, FastAPI, PostgreSQL, n8n, Docker e Power BI para transformar eventos operacionais em informações rastreáveis, alertas e indicadores de desempenho.
 
@@ -12,7 +12,7 @@ Operações logísticas precisam acompanhar entregas, identificar atrasos e comu
 
 Quando essas atividades dependem de processos manuais, podem ocorrer atrasos na identificação de problemas, notificações duplicadas, falta de rastreabilidade e dificuldades para acompanhar indicadores operacionais.
 
-O LogiFlow AI propõe uma arquitetura para automatizar esse fluxo e disponibilizar dados para acompanhamento e tomada de decisão.
+O LogiFlow  propõe uma arquitetura para automatizar esse fluxo e disponibilizar dados para acompanhamento e tomada de decisão.
 
 ## Arquitetura da solução
 
@@ -175,14 +175,14 @@ Os endpoints operacionais protegidos utilizam autenticação por chave de API no
 No terminal PowerShell do VS Code:
 
 ```powershell
- git clone https://github.com/rafaelporfiriobarros/logiflow-ai.git
- cd logiflow-ai
+ git clone https://github.com/rafaelporfiriobarros/logiflow.git
+ cd logiflow
  docker --version
  docker compose version
  uv --version
 ```
 
-Se estiver usando o ZIP do projeto, extraia-o e abra a pasta `logiflow-ai` no VS Code; não precisa clonar. Instale o UV, caso necessário, seguindo a documentação oficial. O `uv` gerencia o Python do projeto: `uv python install 3.12`.
+Se estiver usando o ZIP do projeto, extraia-o e abra a pasta `logiflow` no VS Code; não precisa clonar. Instale o UV, caso necessário, seguindo a documentação oficial. O `uv` gerencia o Python do projeto: `uv python install 3.12`.
 
 ### 2. Configurar `.env` e preservar credenciais
 
@@ -194,7 +194,7 @@ Se estiver usando o ZIP do projeto, extraia-o e abra a pasta `logiflow-ai` no VS
 Ajuste os valores abaixo, que representam um **exemplo**, e substitua os segredos por valores locais próprios:
 
 ```dotenv
-APP_NAME=LogiFlow AI
+APP_NAME=LogiFlow 
 APP_VERSION=0.1.0
 APP_ENV=development
 DB_HOST=127.0.0.1
@@ -261,7 +261,7 @@ uv run alembic current
 ### 6. Inserir dados fictícios
 
 ```powershell
-uv run python -m logiflow_ai.scripts.seed_logistics
+uv run python -m logiflow.scripts.seed_logistics
 ```
 
 Na primeira execução, o script gera 20 clientes, 100 pedidos, 100 remessas, eventos de entrega e alguns incidentes iniciais. Em execuções posteriores, detecta o cliente de demonstração e não duplica a carga. **Importante:** como alguns incidentes já são criados pelo seed, um monitoramento posterior pode identificar atrasos sem criar incidentes ou notificações novas.
@@ -351,8 +351,8 @@ Mantenha `N8N_ENCRYPTION_KEY` estável após criar as credenciais: alterá-la se
 
 No n8n, abra **Workflows → Add workflow → menu `...` → Import from File** (o nome exato do menu pode variar com a versão). Importe, um por vez:
 
-1. `n8n/workflows/monitoring-delays.json` — nome no arquivo: **LogiFlow AI - API Key**. Apesar desse nome, é o workflow de monitoramento; você pode renomeá-lo para **LogiFlow AI | Monitoring Delays**.
-2. `n8n/workflows/notification-outbox-worker.json` — **LogiFlow AI | Notification Outbox Worker**.
+1. `n8n/workflows/monitoring-delays.json` — nome no arquivo: **LogiFlow  - API Key**. Apesar desse nome, é o workflow de monitoramento; você pode renomeá-lo para **LogiFlow  | Monitoring Delays**.
+2. `n8n/workflows/notification-outbox-worker.json` — **LogiFlow  | Notification Outbox Worker**.
 
 Salve os workflows, mas **não publique/ative os agendamentos** antes de concluir a configuração e os testes. A importação do JSON não garante que as credenciais locais estejam associadas aos nós.
 
@@ -364,11 +364,11 @@ Acesse **Credentials → Add credential → Header Auth** e preencha:
 |---|---|
 | **Name** (nome do cabeçalho) | `X-API-Key` |
 | **Value** | Valor real de `MONITORING_API_KEY` no seu `.env` |
-| Nome de exibição da credencial | `LogiFlow AI - API Key` |
+| Nome de exibição da credencial | `LogiFlow  - API Key` |
 
 **Atenção:** o valor não é o texto literal `MONITORING_API_KEY`; é o segredo correspondente. Não envie capturas de tela exibindo esse valor.
 
-Em cada nó HTTP Request dos dois workflows, selecione **Authentication → Generic Credential Type → Header Auth → LogiFlow AI - API Key**. No worker, isso inclui **Claim Notifications**, **Confirm Sent** e **Confirm Failed**.
+Em cada nó HTTP Request dos dois workflows, selecione **Authentication → Generic Credential Type → Header Auth → LogiFlow  - API Key**. No worker, isso inclui **Claim Notifications**, **Confirm Sent** e **Confirm Failed**.
 
 #### 9.4. Workflow 1 — Monitoring Delays
 
@@ -390,7 +390,7 @@ Abra **HTTP Request** e confira:
 | URL | `http://api:8000/api/v1/monitoring/delays` |
 | Authentication | `Generic Credential Type` |
 | Generic Auth Type | `Header Auth` |
-| Credential | `LogiFlow AI - API Key` |
+| Credential | `LogiFlow  - API Key` |
 
 Clique em **Execute workflow** e examine o output do nó HTTP Request. Um resultado válido pode conter:
 
@@ -438,7 +438,7 @@ Confirm Sent          Confirm Failed
 |---|---|
 | Method | `POST` |
 | URL | `http://api:8000/api/v1/notifications/claim` |
-| Authentication | `Header Auth` com `LogiFlow AI - API Key` |
+| Authentication | `Header Auth` com `LogiFlow  - API Key` |
 | Send Body | Ativado |
 | Body Content Type | `JSON` |
 | JSON Body | `{"limit":1}` |
@@ -460,7 +460,7 @@ não há notificações disponíveis naquele instante. O nó **If** verifica a e
 Para usar uma conta Gmail de teste:
 
 1. Acesse https://myaccount.google.com/security e habilite a verificação em duas etapas, se necessário.
-2. Acesse https://myaccount.google.com/apppasswords e gere uma **senha de app** chamada, por exemplo, `LogiFlow AI - n8n`. A opção pode não estar disponível em todas as contas.
+2. Acesse https://myaccount.google.com/apppasswords e gere uma **senha de app** chamada, por exemplo, `LogiFlow  - n8n`. A opção pode não estar disponível em todas as contas.
 3. No nó **Send an Email**, crie uma credencial SMTP e informe:
 
 | Campo SMTP | Valor para Gmail |
@@ -531,7 +531,7 @@ Ambos os nós são HTTP Request autenticados com `X-API-Key`. **Não** envie a c
 } }}
 ```
 
-Em ambos, habilite o envio de body como JSON e selecione a credencial **LogiFlow AI - API Key**. As expressões acima são as utilizadas no JSON do projeto; não substitua o token por um valor fixo.
+Em ambos, habilite o envio de body como JSON e selecione a credencial **LogiFlow  - API Key**. As expressões acima são as utilizadas no JSON do projeto; não substitua o token por um valor fixo.
 
 #### 9.9. Validar a execução de ponta a ponta
 
@@ -620,7 +620,7 @@ uv run pytest -ra -q
 
 ### 11. Power BI
 
-Abra `dashboard/dashboard-logiflow-ai.pbix` no Power BI Desktop. Ajuste a origem de dados para `127.0.0.1:5433`, banco `logiflow`, utilizando preferencialmente o usuário de leitura analítica. Execute os scripts `sql/analytics/` antes de atualizar o relatório. Os dados carregados no arquivo PBIX podem representar um snapshot anterior e não refletem automaticamente as alterações no banco.
+Abra `dashboard/dashboard-logiflow.pbix` no Power BI Desktop. Ajuste a origem de dados para `127.0.0.1:5433`, banco `logiflow`, utilizando preferencialmente o usuário de leitura analítica. Execute os scripts `sql/analytics/` antes de atualizar o relatório. Os dados carregados no arquivo PBIX podem representar um snapshot anterior e não refletem automaticamente as alterações no banco.
 
 ### 12. Encerrar, reiniciar e diagnosticar
 
@@ -693,7 +693,7 @@ O pipeline realiza:
 7. Análise estática com Ruff.
 8. Execução dos testes automatizados.
 
-[Visualizar execuções do GitHub Actions](https://github.com/rafaelporfiriobarros/logiflow-ai/actions)
+[Visualizar execuções do GitHub Actions](https://github.com/rafaelporfiriobarros/logiflow/actions)
 
 ## Decisões técnicas
 
@@ -714,7 +714,7 @@ O pipeline realiza:
 ## Estrutura do projeto
 
 ```text
-logiflow-ai/
+logiflow/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
@@ -730,7 +730,7 @@ logiflow-ai/
 │   ├── analytics/
 │   └── security/
 ├── src/
-│   └── logiflow_ai/
+│   └── logiflow/
 │       ├── api/
 │       ├── core/
 │       ├── models/
@@ -756,8 +756,9 @@ O projeto pode evoluir com:
 
 ## Objetivo do projeto
 
-O LogiFlow AI foi desenvolvido como projeto de portfólio para demonstrar competências em:
+O LogiFlow  foi desenvolvido como projeto de portfólio para demonstrar competências em:
 
 **Engenharia de Dados, Analytics, SQL, Python, APIs REST, automação, modelagem de dados, testes, observabilidade, integração contínua e visualização de indicadores.**
 
-O foco está na construção de uma solução integrada, com regras de negócio, rastreabilidade e práticas de desenvolvimento aplicáveis a ambientes corporativos.
+O foco está na construção de uma solução integrada, com regras de negócio, rastreabilidade e práticas de desenvolvimento aplicáveis a ambientes corporativos.#   l o g i f l o w  
+ 
