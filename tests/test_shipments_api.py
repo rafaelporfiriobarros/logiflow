@@ -6,13 +6,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-import logiflow_ai.models  # noqa: F401
-from logiflow_ai.db.base import Base
-from logiflow_ai.db.session import get_db
-from logiflow_ai.main import app
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
+import logiflow.models  # noqa: F401
+from logiflow.db.base import Base
+from logiflow.db.session import get_db
+from logiflow.main import app
+from logiflow.models.customer import Customer
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
 
 
 @pytest.fixture

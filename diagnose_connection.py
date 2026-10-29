@@ -2,7 +2,7 @@ from time import perf_counter
 
 import psycopg
 
-from logiflow_ai.core.config import get_settings
+from logiflow.core.config import get_settings
 
 settings = get_settings()
 

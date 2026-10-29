@@ -1,4 +1,4 @@
--- LOGIFLOW AI | POWER BI READ-ONLY ACCESS
+-- LOGIFLOW | POWER BI READ-ONLY ACCESS
 
 -- Executar conectado ao banco logiflow.
 

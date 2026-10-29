@@ -1,11 +1,12 @@
+import os
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-import logiflow_ai.models  # noqa: F401
-from logiflow_ai.core.config import get_settings
-from logiflow_ai.db.base import Base
+import logiflow.models  # noqa: F401
+from logiflow.core.config import get_settings
+from logiflow.db.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -13,9 +14,24 @@ config = context.config
 
 settings = get_settings()
 
+database_url = settings.database_url
+
+if os.getenv("LOGIFLOW_MIGRATION_TARGET") == "test":
+    database_url = os.environ["TEST_DATABASE_URL"]
+
+    from sqlalchemy.engine import make_url
+
+    parsed_url = make_url(database_url)
+
+    if parsed_url.database != "logiflow_test":
+        raise RuntimeError(
+            "Migração de testes bloqueada: "
+            "o banco deve ser logiflow_test."
+        )
+
 config.set_main_option(
     "sqlalchemy.url",
-    settings.database_url.replace("%", "%%"),
+    database_url.replace("%", "%%"),
 )
 
 # Interpret the config file for Python logging.

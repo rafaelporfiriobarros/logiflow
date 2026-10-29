@@ -8,17 +8,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-import logiflow_ai.api.dependencies.api_key as api_key_module
-import logiflow_ai.models  # noqa: F401
-from logiflow_ai.core.config import get_settings
-from logiflow_ai.db.base import Base
-from logiflow_ai.db.session import get_db
-from logiflow_ai.main import app
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.incident import Incident
-from logiflow_ai.models.notification_outbox import NotificationOutbox
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
+import logiflow.api.dependencies.api_key as api_key_module
+import logiflow.models  # noqa: F401
+from logiflow.core.config import get_settings
+from logiflow.db.base import Base
+from logiflow.db.session import get_db
+from logiflow.main import app
+from logiflow.models.customer import Customer
+from logiflow.models.incident import Incident
+from logiflow.models.notification_outbox import NotificationOutbox
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
 
 API_KEY = "logiflow-test-api-key"
 HEADERS = {"X-API-Key": API_KEY}

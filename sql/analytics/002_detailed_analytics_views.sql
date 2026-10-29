@@ -1,6 +1,6 @@
 
 -- =========================================================
--- LOGIFLOW AI | ANALYTICS DETAIL LAYER
+-- LOGIFLOW | ANALYTICS DETAIL LAYER
 -- =========================================================
 
 -- Uma linha por incidente.

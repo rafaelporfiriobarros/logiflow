@@ -1,5 +1,5 @@
 {
-  "name": "LogiFlow AI | Notification Outbox Worker",
+  "name": "LogiFlow | Notification Outbox Worker",
   "nodes": [
     {
       "parameters": {
@@ -9,7 +9,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"limit\": 1\n}",
+        "jsonBody": "{\n  \"limit\": 1,\n  \"notification_id\": 1\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -24,7 +24,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "57mmDUkVqYzUWru2",
-          "name": "LogiFlow AI - API Key"
+          "name": "LogiFlow - API Key"
         }
       }
     },
@@ -92,7 +92,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "57mmDUkVqYzUWru2",
-          "name": "LogiFlow AI - API Key"
+          "name": "LogiFlow - API Key"
         }
       }
     },
@@ -118,7 +118,7 @@
       "credentials": {
         "httpHeaderAuth": {
           "id": "57mmDUkVqYzUWru2",
-          "name": "LogiFlow AI - API Key"
+          "name": "LogiFlow - API Key"
         }
       }
     },
@@ -241,17 +241,13 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate"
+    "executionOrder": "v1"
   },
   "versionId": "c590eb62-0a57-4a18-bce2-588e983bb096",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "2c705e3d1a5b44d1eff1aa813a0aa3245a69ac94c32c999edbd06cac96ef8f07"
+    "templateCredsSetupCompleted": false
   },
-  "nodeGroups": [],
-  "id": "W1t3czkR6F8RE6us",
   "tags": []
 }

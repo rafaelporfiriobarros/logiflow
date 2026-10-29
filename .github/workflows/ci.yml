@@ -1,5 +1,5 @@
 
-name: LogiFlow AI - CI
+name: LogiFlow - CI
 
 on:
   push:
@@ -69,7 +69,7 @@ jobs:
       - name: Validate test database target
         run: |
           uv run python -c "
-          from logiflow_ai.core.config import get_settings
+          from logiflow.core.config import get_settings
           from sqlalchemy.engine import make_url
           import os
 

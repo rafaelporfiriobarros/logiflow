@@ -1,8 +1,8 @@
-# LogiFlow AI — Arquitetura Técnica
+# LogiFlow — Arquitetura Técnica
 
 ## 1. Visão geral
 
-O LogiFlow AI é uma plataforma de automação e monitoramento operacional de logística, desenvolvida para identificar atrasos em remessas, registrar incidentes, automatizar notificações e disponibilizar indicadores para análise.
+O LogiFlow é uma plataforma de automação e monitoramento operacional de logística, desenvolvida para identificar atrasos em remessas, registrar incidentes, automatizar notificações e disponibilizar indicadores para análise.
 
 O projeto utiliza Python, FastAPI, PostgreSQL, SQLAlchemy, n8n, Docker e Power BI.
 

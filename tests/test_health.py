@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from logiflow_ai.main import app
+from logiflow.main import app
 
 client = TestClient(app)
 
@@ -12,7 +12,7 @@ def test_root():
 
     data = response.json()
 
-    assert data["application"] == "LogiFlow AI"
+    assert data["application"] == "LogiFlow"
     assert data["version"] == "0.1.0"
     assert data["documentation"] == "/docs"
 

@@ -1,4 +1,4 @@
-
+﻿
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
@@ -7,27 +7,27 @@ from sqlalchemy import create_engine, func, select
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-import logiflow_ai.models  # noqa: F401
-from logiflow_ai.db.base import Base
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.incident import Incident
-from logiflow_ai.models.monitoring_run import MonitoringRun
-from logiflow_ai.models.notification_outbox import NotificationOutbox
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
-from logiflow_ai.services.monitoring_service import execute_delay_monitoring
+import logiflow.models  # noqa: F401
+from logiflow.db.base import Base
+from logiflow.models.customer import Customer
+from logiflow.models.incident import Incident
+from logiflow.models.monitoring_run import MonitoringRun
+from logiflow.models.notification_outbox import NotificationOutbox
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
+from logiflow.services.monitoring_service import execute_delay_monitoring
 
 
 @pytest.fixture
 def session_factory(monkeypatch):
-    from logiflow_ai.core.config import get_settings
+    from logiflow.core.config import get_settings
 
     monkeypatch.setenv(
         "ALERTS_EMAIL_TO",
         "operacoes@example.com",
     )
 
-    # Limpa configurações armazenadas anteriormente
+    # Limpa configuraÃ§Ãµes armazenadas anteriormente
     get_settings.cache_clear()
 
     engine = create_engine(
@@ -46,7 +46,7 @@ def session_factory(monkeypatch):
     try:
         yield factory
     finally:
-        # Libera recursos e limpa o cache após o teste
+        # Libera recursos e limpa o cache apÃ³s o teste
         engine.dispose()
         get_settings.cache_clear()
 
@@ -55,7 +55,7 @@ def session_factory(monkeypatch):
 def seed_delayed_shipment(session_factory):
     with session_factory() as db:
         customer = Customer(
-            name="Cliente Integração",
+            name="Cliente IntegraÃ§Ã£o",
             email="integracao@example.com",
         )
         db.add(customer)
@@ -128,7 +128,7 @@ def test_notification_failure_rolls_back_incident(session_factory):
     seed_delayed_shipment(session_factory)
 
     with patch(
-        "logiflow_ai.services.monitoring_service."
+        "logiflow.services.monitoring_service."
         "enqueue_incident_notifications",
         side_effect=RuntimeError("Falha simulada na outbox"),
     ), pytest.raises(
@@ -146,3 +146,4 @@ def test_notification_failure_rolls_back_incident(session_factory):
         assert len(runs) == 1
         assert runs[0].status == "failed"
         assert "Falha simulada na outbox" in runs[0].error_message
+

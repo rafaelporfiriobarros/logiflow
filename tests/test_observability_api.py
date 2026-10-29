@@ -2,8 +2,8 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from logiflow_ai.api.routes import observability
-from logiflow_ai.db.session import get_db
+from logiflow.api.routes import observability
+from logiflow.db.session import get_db
 
 
 def create_test_client():
@@ -20,7 +20,7 @@ def create_test_client():
 
 def test_observability_requires_api_key(monkeypatch):
     monkeypatch.setattr(
-        "logiflow_ai.api.dependencies.api_key.get_expected_api_key",
+        "logiflow.api.dependencies.api_key.get_expected_api_key",
         lambda: "test-secret-key",
     )
 
@@ -36,7 +36,7 @@ def test_observability_requires_api_key(monkeypatch):
 
 def test_observability_returns_summary(monkeypatch):
     monkeypatch.setattr(
-        "logiflow_ai.api.dependencies.api_key.get_expected_api_key",
+        "logiflow.api.dependencies.api_key.get_expected_api_key",
         lambda: "test-secret-key",
     )
 
@@ -91,7 +91,7 @@ def test_observability_returns_summary(monkeypatch):
 
 def test_observability_rejects_invalid_api_key(monkeypatch):
     monkeypatch.setattr(
-        "logiflow_ai.api.dependencies.api_key.get_expected_api_key",
+        "logiflow.api.dependencies.api_key.get_expected_api_key",
         lambda: "test-secret-key",
     )
 

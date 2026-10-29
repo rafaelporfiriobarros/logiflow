@@ -1,4 +1,4 @@
-# LogiFlow AI — Workflow de Monitoramento
+# LogiFlow — Workflow de Monitoramento
 
 ## Objetivo
 

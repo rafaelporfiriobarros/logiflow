@@ -1,4 +1,4 @@
-# LogiFlow AI — Notification Outbox Worker
+# LogiFlow — Notification Outbox Worker
 
 ## Objetivo
 

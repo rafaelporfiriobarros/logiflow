@@ -7,13 +7,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-import logiflow_ai.models  # noqa: F401
-from logiflow_ai.db.base import Base
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.incident import Incident
-from logiflow_ai.models.notification_outbox import NotificationOutbox
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
+import logiflow.models  # noqa: F401
+from logiflow.db.base import Base
+from logiflow.models.customer import Customer
+from logiflow.models.incident import Incident
+from logiflow.models.notification_outbox import NotificationOutbox
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
 
 
 @pytest.fixture

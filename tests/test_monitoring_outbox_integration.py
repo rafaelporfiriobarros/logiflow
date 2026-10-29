@@ -8,15 +8,15 @@ import pytest
 from sqlalchemy import create_engine, func, select
 from sqlalchemy.orm import Session
 
-import logiflow_ai.models  # noqa: F401
-from logiflow_ai.db.base import Base
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.incident import Incident
-from logiflow_ai.models.notification_outbox import NotificationOutbox
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
-from logiflow_ai.services.delay_monitor import detect_delivery_delays
-from logiflow_ai.services.notification_service import (
+import logiflow.models  # noqa: F401
+from logiflow.db.base import Base
+from logiflow.models.customer import Customer
+from logiflow.models.incident import Incident
+from logiflow.models.notification_outbox import NotificationOutbox
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
+from logiflow.services.delay_monitor import detect_delivery_delays
+from logiflow.services.notification_service import (
     enqueue_incident_notifications,
 )
 

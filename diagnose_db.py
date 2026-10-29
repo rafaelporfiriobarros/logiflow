@@ -2,7 +2,7 @@ from time import perf_counter
 
 from sqlalchemy import create_engine, text
 
-from logiflow_ai.core.config import get_settings
+from logiflow.core.config import get_settings
 
 settings = get_settings()
 

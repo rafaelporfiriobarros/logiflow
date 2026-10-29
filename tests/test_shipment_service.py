@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from logiflow_ai.models.shipment import Shipment
-from logiflow_ai.services.shipment_service import (
+from logiflow.models.shipment import Shipment
+from logiflow.services.shipment_service import (
     InvalidStatusTransitionError,
     ShipmentNotFoundError,
     update_shipment_status,

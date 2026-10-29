@@ -760,5 +760,4 @@ O LogiFlow  foi desenvolvido como projeto de portfólio para demonstrar competê
 
 **Engenharia de Dados, Analytics, SQL, Python, APIs REST, automação, modelagem de dados, testes, observabilidade, integração contínua e visualização de indicadores.**
 
-O foco está na construção de uma solução integrada, com regras de negócio, rastreabilidade e práticas de desenvolvimento aplicáveis a ambientes corporativos.#   l o g i f l o w  
- 
+O foco está na construção de uma solução integrada, com regras de negócio, rastreabilidade e práticas de desenvolvimento aplicáveis a ambientes corporativos.

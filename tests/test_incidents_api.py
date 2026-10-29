@@ -6,13 +6,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-from logiflow_ai.db.base import Base
-from logiflow_ai.db.session import get_db
-from logiflow_ai.main import app
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.incident import Incident
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
+from logiflow.db.base import Base
+from logiflow.db.session import get_db
+from logiflow.main import app
+from logiflow.models.customer import Customer
+from logiflow.models.incident import Incident
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
 
 
 @pytest.fixture

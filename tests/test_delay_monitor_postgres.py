@@ -5,11 +5,11 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import func, select
 
-from logiflow_ai.models.customer import Customer
-from logiflow_ai.models.incident import Incident
-from logiflow_ai.models.order import Order
-from logiflow_ai.models.shipment import Shipment
-from logiflow_ai.services.delay_monitor import detect_delivery_delays
+from logiflow.models.customer import Customer
+from logiflow.models.incident import Incident
+from logiflow.models.order import Order
+from logiflow.models.shipment import Shipment
+from logiflow.services.delay_monitor import detect_delivery_delays
 
 
 @pytest.mark.postgres
@@ -77,7 +77,26 @@ def test_concurrent_monitoring_creates_single_incident(
             )
 
         assert total == 1
-        assert sum(result.created_incidents for result in results) == 1
+
+        created_ids = {
+            incident_id
+            for result in results
+            for incident_id in result.created_incident_ids
+        }
+
+        with session_factory() as db:
+            created_for_target = db.scalar(
+                select(func.count())
+                .select_from(Incident)
+                .where(
+                    Incident.id.in_(created_ids),
+                    Incident.shipment_id == shipment_id,
+                    Incident.incident_type == "delivery_delay",
+                    Incident.status == "open",
+                )
+            )
+
+        assert created_for_target == 1
 
     finally:
         with session_factory() as db:
@@ -85,7 +104,9 @@ def test_concurrent_monitoring_creates_single_incident(
 
             db.query(Shipment).filter(Shipment.id == shipment_id).delete()
 
-            db.query(Order).filter(Order.id == order_id).delete()
+            db.query(Order).filter(
+                Order.id == order_id
+            ).delete()
 
             db.query(Customer).filter(Customer.id == customer_id).delete()
 

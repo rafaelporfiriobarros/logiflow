@@ -1,5 +1,8 @@
-services:
 
+services:
+  # ==========================================
+  # POSTGRESQL
+  # ==========================================
   postgres:
     image: postgres:17
     restart: unless-stopped
@@ -23,6 +26,9 @@ services:
       timeout: 5s
       retries: 10
 
+  # ==========================================
+  # FASTAPI - AMBIENTE OPERACIONAL
+  # ==========================================
   api:
     build:
       context: .
@@ -37,10 +43,11 @@ services:
 
       DB_HOST: postgres
       DB_HOSTADDR: ""
-      DB_PORT: 5432
+      DB_PORT: "5432"
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+
       MONITORING_API_KEY: ${MONITORING_API_KEY:?Configure MONITORING_API_KEY no .env}
       ALERTS_EMAIL_TO: ${ALERTS_EMAIL_TO:?Configure ALERTS_EMAIL_TO no .env}
 
@@ -51,9 +58,43 @@ services:
       postgres:
         condition: service_healthy
 
-    
+  # ==========================================
+  # FASTAPI - AMBIENTE DE HOMOLOGACAO
+  # ==========================================
+  api-hml:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    restart: "no"
+
+    environment:
+      APP_NAME: logiflow-api-hml
+      APP_VERSION: ${APP_VERSION}
+      APP_ENV: testing
+
+      DB_HOST: postgres
+      DB_HOSTADDR: ""
+      DB_PORT: "5432"
+      DB_NAME: logiflow_test
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      MONITORING_API_KEY: ${HML_MONITORING_API_KEY:?Configure HML_MONITORING_API_KEY no .env}
+      ALERTS_EMAIL_TO: teste-logiflow@example.invalid
+
+    ports:
+      - "127.0.0.1:8002:8000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ==========================================
+  # N8N - AUTOMACAO E ORQUESTRACAO
+  # ==========================================
   n8n:
-    image: n8nio/n8n:latest
+    image: docker.n8n.io/n8nio/n8n:stable
     restart: unless-stopped
 
     ports:
@@ -63,20 +104,26 @@ services:
       N8N_HOST: localhost
       N8N_PORT: "5678"
       N8N_PROTOCOL: http
+      N8N_SECURE_COOKIE: "false"
+
       GENERIC_TIMEZONE: ${N8N_TIMEZONE:-America/Sao_Paulo}
       TZ: ${N8N_TIMEZONE:-America/Sao_Paulo}
+
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?Configure N8N_ENCRYPTION_KEY no .env}
       N8N_DIAGNOSTICS_ENABLED: "false"
-      MONITORING_API_KEY: ${MONITORING_API_KEY:?Configure MONITORING_API_KEY no .env}
 
     volumes:
       - n8n_data:/home/node/.n8n
 
-    depends_on:
-      api:
-        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
-
+# ==========================================
+# VOLUMES PERSISTENTES
+# ==========================================
 volumes:
   postgres_data:
+    name: logiflow_postgres_data
+
   n8n_data:
+    name: logiflow_n8n_data
